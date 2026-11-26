@@ -42,8 +42,23 @@ assert_contains "$(cat "$t5")" 'seta com_maxfps "0"'
 t5_before=$(cat "$t5")
 bo2_prepare "$p"
 assert_contains "$(cat "$t6")" 'seta r_aaSamples "4"'
-assert_contains "$(cat "$t6")" 'seta com_maxfps "85"'
+assert_contains "$(cat "$t6")" 'seta com_maxfps "0"'
 assert_eq "$(cat "$t5")" "$t5_before" "bo2_prepare touched BO1's config"
+MAXFPS=72 bo2_prepare "$p"
+assert_contains "$(cat "$t6")" 'seta com_maxfps "72"'
+bo2_prepare "$p"
+assert_contains "$(cat "$t6")" 'seta com_maxfps "0"'
+
+# BO2 pacing cvars (including mod configs).
+t6mod=$p/storage/t6/players/mods/testmod/plutonium_zm.cfg
+mkdir -p "$(dirname "$t6mod")"
+printf 'seta r_vsync "1"\nseta r_flame_allowed "1"\nseta fix_mouse_lag "1"\nseta snd_speakerConfiguration "5.1 No Center 3D"\nseta com_busyWait "1"\n' > "$t6mod"
+bo2_prepare "$p"
+assert_contains "$(cat "$t6mod")" 'seta r_vsync "0"'
+assert_contains "$(cat "$t6mod")" 'seta r_flame_allowed "0"'
+assert_contains "$(cat "$t6mod")" 'seta fix_mouse_lag "0"'
+assert_contains "$(cat "$t6mod")" 'seta snd_speakerConfiguration "Stereo"'
+assert_contains "$(cat "$t6mod")" 'seta com_busyWait "0"'
 # A BO2 mode with no hardware profile in storage gets an invalid one (zeros):
 # BO2 then detects its own (safe under DXMT) instead of falling back to a
 # profile in the game's players folder, which another renderer may have

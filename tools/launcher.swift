@@ -11,6 +11,7 @@ enum DisplayMode: String, CaseIterable, Identifiable {
 enum FpsCap: String, CaseIterable, Identifiable {
     case uncapped = "Uncapped"
     case fps60 = "60"
+    case fps72 = "72"
     case fps120 = "120"
     case fps144 = "144"
     var id: String { rawValue }
@@ -21,6 +22,7 @@ final class LauncherViewModel: ObservableObject {
     @Published var useLegacyNtdll = true
     @Published var metalHud = false
     @Published var x87Accel = true
+    @Published var smoothMouse = true
     @Published var fpsCap: FpsCap = .uncapped
     @Published var displayMode: DisplayMode = .auto
 
@@ -176,6 +178,7 @@ final class LauncherViewModel: ObservableObject {
         env["NTDLL"] = useLegacyNtdll ? "legacy" : "fixed"
         env["HUD"] = metalHud ? "1" : "0"
         env["X87"] = x87Accel ? "1" : "0"
+        env["MOUSE_COALESCING"] = smoothMouse ? "1" : "0"
         if fpsCap != .uncapped {
             env["MAXFPS"] = fpsCap.rawValue
         } else {
@@ -233,7 +236,8 @@ final class LauncherViewModel: ObservableObject {
             try proc.run()
             activeProcess = proc
             if !needsSetup {
-                statusLine = "RUNNING // \(useLegacyNtdll ? "NTDLL=legacy" : "NTDLL=fixed")\(metalHud ? " • HUD" : "")"
+                let fpsLabel = fpsCap != .uncapped ? " • \(fpsCap.rawValue)FPS" : ""
+                statusLine = "RUNNING // \(useLegacyNtdll ? "NTDLL=legacy" : "NTDLL=fixed")\(fpsLabel)\(metalHud ? " • HUD" : "")"
             }
         } catch {
             isRunning = false
@@ -247,6 +251,7 @@ final class LauncherViewModel: ObservableObject {
         proc.arguments = ["./launch.sh", "kill"]
         proc.currentDirectoryURL = URL(fileURLWithPath: runtimeDir)
         var env = ProcessInfo.processInfo.environment
+        env["PATH"] = "/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin:/usr/local/bin"
         env["WINEPREFIX"] = prefixDir
         env["AIO_LOGS"] = logsDir
         proc.environment = env
@@ -296,7 +301,7 @@ struct TacticalSegmentedPicker<T: Hashable & Identifiable & RawRepresentable>: V
         .padding(2)
         .background(Color.black.opacity(0.45))
         .overlay(RoundedRectangle(cornerRadius: 4).stroke(border, lineWidth: 1))
-        .frame(width: 256)
+        .frame(width: 272)
         .fixedSize(horizontal: true, vertical: true)
     }
 }
@@ -422,6 +427,12 @@ struct ContentView: View {
                     title: "METAL HUD",
                     subtitle: "Show Apple FPS & frame time overlay",
                     isOn: $vm.metalHud
+                )
+                Divider().background(border)
+                TacticalToggleRow(
+                    title: "SMOOTH MOUSE",
+                    subtitle: "Coalesce mouse events to reduce jitter (recommended)",
+                    isOn: $vm.smoothMouse
                 )
                 Divider().background(border)
 

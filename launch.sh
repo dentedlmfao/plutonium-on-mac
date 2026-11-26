@@ -100,11 +100,17 @@ apply_switches() {
   if [ "${LAZY_EXEC:-1}" = 1 ]; then set_env WINE_ROSETTA_LAZY_EXEC 1; else clear_env WINE_ROSETTA_LAZY_EXEC; fi
   if [ "${SOCKFIX:-1}" = 0 ]; then set_env WINE_SOCK_FASTPATH 0; else clear_env WINE_SOCK_FASTPATH; fi
   if [ "${MOUSE_COALESCING:-0}" = 1 ]; then set_env WINE_MOUSE_COALESCING 1; else clear_env WINE_MOUSE_COALESCING; fi
+  # Disable Windows pointer acceleration ("Enhance pointer precision") so macOS
+  # cursor motion is not double-accelerated.
+  do_reg add 'HKCU\Control Panel\Mouse' /v MouseSpeed /d 0 /f
+  do_reg add 'HKCU\Control Panel\Mouse' /v MouseThreshold1 /d 0 /f
+  do_reg add 'HKCU\Control Panel\Mouse' /v MouseThreshold2 /d 0 /f
   # x87 maths through the x87sidecar (patch 0023), only in the process both
   # games run in.
   if [ "${X87:-1}" = 1 ]; then set_env WINE_X87_SIDECAR plutonium-bootstrapper-win32.exe; else clear_env WINE_X87_SIDECAR; fi
   if [ -n "${MAXFPS:-}" ]; then set_env DXMT_CONFIG "d3d11.preferredMaxFrameRate=$MAXFPS;"; else clear_env DXMT_CONFIG; fi
   if [ "${HUD:-0}" = 1 ]; then set_env MTL_HUD_ENABLED 1; else clear_env MTL_HUD_ENABLED; fi
+  set_env DXMT_SHADER_CACHE "${DXMT_SHADER_CACHE:-1}"
   set_env DXVK_ASYNC "${DXVK_ASYNC:-1}"
   if [ "${XAUDIO:-native}" = native ] && [ -f "$WINEPREFIX/xaudio2_7.native.dll" ]; then
     do_put "$WINEPREFIX/xaudio2_7.native.dll" "$syswow64/xaudio2_7.dll"
@@ -113,8 +119,15 @@ apply_switches() {
     do_put "$w32/xaudio2_7.dll" "$syswow64/xaudio2_7.dll"
     do_reg delete "$bootstrapper\\DllOverrides" /v xaudio2_7 /f
   fi
-  if [ "${VERBOSE:-0}" = 1 ]; then export WINEDEBUG=err+module,err+d3d,err+d3d9,err+xaudio2,err+seh
-  else export WINEDEBUG=-all; fi
+  if [ "${VERBOSE:-0}" = 1 ]; then
+    export WINEDEBUG=err+module,err+d3d,err+d3d9,err+xaudio2,err+seh
+    export MVK_CONFIG_LOG_LEVEL=2
+    clear_env DXMT_LOG_LEVEL
+  else
+    export WINEDEBUG=-all
+    export MVK_CONFIG_LOG_LEVEL=1
+    set_env DXMT_LOG_LEVEL error
+  fi
 }
 
 # The program to start: Plutonium's updater (it updates, then opens the

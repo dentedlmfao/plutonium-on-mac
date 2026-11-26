@@ -63,7 +63,8 @@ bo2_prepare() {
       [ -f "$chp" ] || head -c 4096 /dev/zero > "$chp"
     done
   fi
-  for cfg in "$1"/storage/t6/players/plutonium_mp.cfg "$1"/storage/t6/players/plutonium_zm.cfg; do
+  for cfg in "$1"/storage/t6/players/plutonium_mp.cfg "$1"/storage/t6/players/plutonium_zm.cfg \
+    "$1"/storage/t6/players/mods/*/plutonium_mp.cfg "$1"/storage/t6/players/mods/*/plutonium_zm.cfg; do
     [ -f "$cfg" ] || continue
     clamp_msaa "$cfg"
     display_mode "$cfg"
@@ -72,9 +73,14 @@ bo2_prepare() {
       set_cvar "$cfg" sm_maxLights 0
       set_cvar "$cfg" r_dofHDR 0
       set_cvar "$cfg" r_waterSheetingFX_allowed 0
+      set_cvar "$cfg" r_flame_allowed 0
+      set_cvar "$cfg" r_vsync 0
       set_cvar "$cfg" fx_marks 0
       set_cvar "$cfg" r_texFilterAnisoMax 4
       set_cvar "$cfg" raw_input 1
+      set_cvar "$cfg" fix_mouse_lag 0
+      set_cvar "$cfg" snd_speakerConfiguration Stereo
+      set_cvar "$cfg" com_busyWait 0
       set_cvar "$cfg" com_maxfps 0
     fi
     if [ -n "${MAXFPS:-}" ]; then set_cvar "$cfg" com_maxfps "$MAXFPS"; fi
