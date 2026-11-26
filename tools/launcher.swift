@@ -22,7 +22,7 @@ final class LauncherViewModel: ObservableObject {
     @Published var useLegacyNtdll = true
     @Published var metalHud = false
     @Published var x87Accel = true
-    @Published var smoothMouse = true
+    @Published var smoothMouse = false
     @Published var fpsCap: FpsCap = .uncapped
     @Published var displayMode: DisplayMode = .auto
 
@@ -430,8 +430,8 @@ struct ContentView: View {
                 )
                 Divider().background(border)
                 TacticalToggleRow(
-                    title: "SMOOTH MOUSE",
-                    subtitle: "Coalesce mouse events to reduce jitter (recommended)",
+                    title: "MOUSE COALESCING",
+                    subtitle: "Batch mouse moves per display refresh",
                     isOn: $vm.smoothMouse
                 )
                 Divider().background(border)

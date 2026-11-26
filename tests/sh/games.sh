@@ -52,10 +52,11 @@ assert_contains "$(cat "$t6")" 'seta com_maxfps "0"'
 # BO2 pacing cvars (including mod configs).
 t6mod=$p/storage/t6/players/mods/testmod/plutonium_zm.cfg
 mkdir -p "$(dirname "$t6mod")"
-printf 'seta r_vsync "1"\nseta r_flame_allowed "1"\nseta fix_mouse_lag "1"\nseta snd_speakerConfiguration "5.1 No Center 3D"\nseta com_busyWait "1"\n' > "$t6mod"
+printf 'seta r_vsync "1"\nseta r_flame_allowed "1"\nseta m_filter "0"\nseta fix_mouse_lag "1"\nseta snd_speakerConfiguration "5.1 No Center 3D"\nseta com_busyWait "1"\n' > "$t6mod"
 bo2_prepare "$p"
 assert_contains "$(cat "$t6mod")" 'seta r_vsync "0"'
 assert_contains "$(cat "$t6mod")" 'seta r_flame_allowed "0"'
+assert_contains "$(cat "$t6mod")" 'seta m_filter "1"'
 assert_contains "$(cat "$t6mod")" 'seta fix_mouse_lag "0"'
 assert_contains "$(cat "$t6mod")" 'seta snd_speakerConfiguration "Stereo"'
 assert_contains "$(cat "$t6mod")" 'seta com_busyWait "0"'

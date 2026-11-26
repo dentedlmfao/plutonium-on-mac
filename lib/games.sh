@@ -78,6 +78,7 @@ bo2_prepare() {
       set_cvar "$cfg" fx_marks 0
       set_cvar "$cfg" r_texFilterAnisoMax 4
       set_cvar "$cfg" raw_input 1
+      set_cvar "$cfg" m_filter 1
       set_cvar "$cfg" fix_mouse_lag 0
       set_cvar "$cfg" snd_speakerConfiguration Stereo
       set_cvar "$cfg" com_busyWait 0
