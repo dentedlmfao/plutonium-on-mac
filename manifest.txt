@@ -1,0 +1,11 @@
+# Every file setup.sh or build/build.sh downloads: name, URL, SHA-256.
+# "-" means the file is not pinned: plutonium.exe (Plutonium updates it;
+# setup.sh checks its signature).
+crossover-sources-26.3.0.tar.gz https://media.codeweavers.com/pub/crossover/source/crossover-sources-26.3.0.tar.gz ac99c8ca4b3848f3e81784135f023df266b61c2345726ea55a50b3e030dd6872
+dxmt-v0.80-builtin.tar.gz https://github.com/3Shain/dxmt/releases/download/v0.80/dxmt-v0.80-builtin.tar.gz 8f260e36b5739e68f3bad613381441385c4dc7b85b78ba8de653d5a6a264529d
+MoltenVK-macos.tar https://github.com/KhronosGroup/MoltenVK/releases/download/v1.4.2/MoltenVK-macos.tar f95765a6229cb7b915990a2890ce12ebe36a730b021545d3d52ae69ce4c4024e
+plutonium.exe https://cdn.plutonium.pw/updater/plutonium.exe -
+# Sikarugir's wrapper template: the runner, and the x86_64 libraries the engine links against.
+Sikarugir-Template.tar.xz https://github.com/Sikarugir-App/Template/releases/download/v1.0/Template-1.0.24.tar.xz 4b5f89eeb9ef139936bdfad33d9b420b05ea4597cb7d63376674f7a8e171321c
+# The engine and test programs of this release (build/build.sh --pack 0.2.0).
+plutonium-mac-aio-engine.tar.xz https://github.com/LuidgiAlt/plutonium-mac-aio/releases/download/v0.2.1/plutonium-mac-aio-engine-0.2.1.tar.xz c9e1861556acfcc1af3b81e6bc2ce62a184d2e3ec77b678a53a9586c796bf3c1

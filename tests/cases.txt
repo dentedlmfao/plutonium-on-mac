@@ -1,0 +1,47 @@
+# One test case per line: name|env|ntdll|d3d9|logcheck
+#   name     program (tests/bin/<first word>.exe) and its arguments
+#   env      comma-separated K=V for this case, or -
+#   ntdll    fixed, legacy, both, or - (runs with whatever ntdll is selected)
+#   d3d9     dxvk, or - (renderer does not matter); Direct3D 9 is DXVK
+#   logcheck - or count:<regex>==<n> over the case's Wine stderr (WINEDEBUG=err+all)
+d3d9-constants-test|-|-|dxvk|-
+d3d9-format-test|-|-|dxvk|-
+d3d9-managed-volume-test|-|-|dxvk|-
+d3d9-shader-test|-|-|dxvk|-
+d3d9-shader-test2|-|-|dxvk|-
+d3d9-texmatrix-test|-|-|dxvk|-
+d3d9-ubyte4-test|-|-|dxvk|-
+d3d9-varying-test|-|-|dxvk|-
+d3d9-vpos-test|-|-|dxvk|-
+xinput-test 0|-|-|-|-
+# Two draw states in this test: each failed compile is logged once, not once per frame (was 194).
+d3d9-async-fail-test|DXVK_ASYNC=1,DXVK_ASYNC_FAIL_TEST=1|-|dxvk|count:async compile failed==2
+d3d9-swvp-test|-|-|dxvk|count:Failed to (compile|create)==0
+d3d9-shadow-test|-|-|dxvk|count:Failed to compile|mvk-error==0
+recv-test|-|both|-|-
+lazy-exec-test|WINE_ROSETTA_LAZY_EXEC=1|both|-|-
+pulse-test|WINEMSYNC=1|both|-|-
+# Breakpoint emulation (0001/0002). self must pass on both ntdlls (the legacy one is the safety net).
+breakpoint-test self|WINE_ROSETTA_EXEC_BREAKPOINTS=1,WINE_ROSETTA_WOW64_BREAKPOINTS=1,WINE_ROSETTA_CALL_WORKAROUND=1|both|-|-
+breakpoint-test remote-blocked|WINE_ROSETTA_EXEC_BREAKPOINTS=1,WINE_ROSETTA_WOW64_BREAKPOINTS=1,WINE_ROSETTA_CALL_WORKAROUND=1|fixed|-|-
+breakpoint-test suspended-start|WINE_ROSETTA_EXEC_BREAKPOINTS=1,WINE_ROSETTA_WOW64_BREAKPOINTS=1,WINE_ROSETTA_CALL_WORKAROUND=1|fixed|-|-
+breakpoint-test disarm|WINE_ROSETTA_EXEC_BREAKPOINTS=1,WINE_ROSETTA_WOW64_BREAKPOINTS=1,WINE_ROSETTA_CALL_WORKAROUND=1|fixed|-|-
+breakpoint-test rearm|WINE_ROSETTA_EXEC_BREAKPOINTS=1,WINE_ROSETTA_WOW64_BREAKPOINTS=1,WINE_ROSETTA_CALL_WORKAROUND=1|fixed|-|-
+breakpoint-test resume-at|WINE_ROSETTA_EXEC_BREAKPOINTS=1,WINE_ROSETTA_WOW64_BREAKPOINTS=1,WINE_ROSETTA_CALL_WORKAROUND=1|fixed|-|-
+breakpoint-test syscall-load|WINE_ROSETTA_EXEC_BREAKPOINTS=1,WINE_ROSETTA_WOW64_BREAKPOINTS=1,WINE_ROSETTA_CALL_WORKAROUND=1|fixed|-|-
+breakpoint-test pushfd|WINE_ROSETTA_EXEC_BREAKPOINTS=1,WINE_ROSETTA_WOW64_BREAKPOINTS=1,WINE_ROSETTA_CALL_WORKAROUND=1|fixed|-|-
+breakpoint-test app-tf|WINE_ROSETTA_EXEC_BREAKPOINTS=1,WINE_ROSETTA_WOW64_BREAKPOINTS=1,WINE_ROSETTA_CALL_WORKAROUND=1|fixed|-|-
+breakpoint-test popfd-keeps|WINE_ROSETTA_EXEC_BREAKPOINTS=1,WINE_ROSETTA_WOW64_BREAKPOINTS=1,WINE_ROSETTA_CALL_WORKAROUND=1|fixed|-|-
+breakpoint-test64 x64-remote-syscall|WINE_ROSETTA_EXEC_BREAKPOINTS=1,WINE_ROSETTA_WOW64_BREAKPOINTS=1,WINE_ROSETTA_CALL_WORKAROUND=1|fixed|-|-
+breakpoint-test64 x64-idle-cost|WINE_ROSETTA_EXEC_BREAKPOINTS=1,WINE_ROSETTA_WOW64_BREAKPOINTS=1,WINE_ROSETTA_CALL_WORKAROUND=1|fixed|-|-
+breakpoint-test global-bit|WINE_ROSETTA_EXEC_BREAKPOINTS=1,WINE_ROSETTA_WOW64_BREAKPOINTS=1,WINE_ROSETTA_CALL_WORKAROUND=1|fixed|-|-
+d3d9-vface-test|-|-|dxvk|-
+d3d9-short4-test|-|-|dxvk|-
+d3d9-declswitch-test|-|-|dxvk|-
+d3d9-managed-formats-test|-|-|dxvk|-
+d3d9-shaderswitch-test|-|-|dxvk|-
+d3d9-async-burst-test|DXVK_ASYNC=1|-|dxvk|-
+# BO2 renderer: Direct3D 11 through DXMT.
+d3d11-dxmt-test|-|-|-|-
+# x87 maths under the x87sidecar (0023): the test and its child both log that acceleration is on.
+x87-sidecar-test|WINE_X87_SIDECAR=x87-sidecar-test.exe|-|-|count:x87 acceleration on for this process==2
